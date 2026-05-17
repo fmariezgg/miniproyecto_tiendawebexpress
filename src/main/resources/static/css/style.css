@@ -1,0 +1,93 @@
+.button-primary {
+  background-color: #006972;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.button-primary:hover {
+  background-color: #00525a;
+}
+
+.product-card {
+  border: 1px solid #e7e2d9;
+  border-radius: 8px;
+  overflow: hidden;
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.filter-btn {
+  padding: 8px 16px;
+  border: 2px solid #e7e2d9;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: white;
+  width: 100%;
+  text-align: left;
+}
+
+.filter-btn.active {
+  background-color: #006972;
+  color: white;
+  border-color: #006972;
+}
+
+.cantidad-control {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e7e2d9;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.cantidad-control button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.cantidad-control input {
+  width: 60px;
+  text-align: center;
+  border: none;
+  font-weight: bold;
+  outline: none;
+}
+
+.input-field {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e7e2d9;
+  border-radius: 4px;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #006972;
+  box-shadow: 0 0 0 3px rgba(0, 105, 114, 0.1);
+}
+
+.input-field.error {
+  border-color: #ba1a1a;
+}
+
+.error-message {
+  color: #ba1a1a;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+}

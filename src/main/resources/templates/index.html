@@ -1,310 +1,193 @@
-<!DOCTYPE html>
-<html class="light" lang="es">
-<head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<!doctype html>
+<html class="light" lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Tienda Web Express - Tu tienda online</title>
+
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+
     <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    "colors": {
-                        "primary": "#006972",
-                        "secondary": "#306669",
-                        "tertiary": "#2c6956",
-                        "surface": "#fff9ef",
-                        "on-surface": "#1d1b16",
-                        "error": "#ba1a1a"
-                    },
-                    "fontFamily": {
-                        "body-md": ["Plus Jakarta Sans"],
-                        "headline-sm": ["Manrope"],
-                        "display-lg": ["Manrope"]
-                    }
-                }
-            }
-        };
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#006972",
+              secondary: "#306669",
+              surface: "#fff9ef",
+              "on-surface": "#1d1b16",
+              error: "#ba1a1a",
+            },
+          },
+        },
+      };
     </script>
-    <style>
-        .button-primary {
-            background-color: #006972;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 4px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .button-primary:hover {
-            background-color: #00525a;
-        }
-        .product-card {
-            border: 1px solid #e7e2d9;
-            border-radius: 8px;
-            overflow: hidden;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-    </style>
-</head>
-<body class="bg-surface text-on-surface font-body-md">
 
-<!-- HEADER / NAVBAR -->
-<header class="bg-white border-b border-gray-200 sticky top-0 z-50">
-    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-        <!-- Logo -->
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body class="bg-surface text-on-surface font-body-md">
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+      <nav
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between"
+      >
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <span class="text-white font-bold text-lg">T</span>
-            </div>
-            <h1 class="text-2xl font-bold text-primary">Tienda Express</h1>
+          <div
+            class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center"
+          >
+            <span class="text-white font-bold text-lg">T</span>
+          </div>
+          <h1 class="text-2xl font-bold text-primary">Tienda Express</h1>
         </div>
-
-        <!-- Menu Desktop -->
         <div class="hidden md:flex items-center gap-8">
-            <a href="#inicio" class="text-on-surface hover:text-primary font-label-md">Inicio</a>
-            <a href="/catalogo" class="text-on-surface hover:text-primary font-label-md">Catálogo</a>
-            <a href="#contacto" class="text-on-surface hover:text-primary font-label-md">Contacto</a>
-            <a href="/pedido/formulario" class="button-primary">Hacer Pedido</a>
+          <a href="/" class="text-on-surface hover:text-primary">Inicio</a>
+          <a href="/catalogo" class="text-on-surface hover:text-primary"
+            >Catálogo</a
+          >
+          <a href="/pedido/formulario" class="button-primary">Hacer Pedido</a>
         </div>
-
-        <!-- Menu Mobile Toggle -->
         <button id="menu-toggle" class="md:hidden">
-            <span class="material-symbols-outlined text-primary">menu</span>
+          <span class="material-symbols-outlined text-primary">menu</span>
         </button>
-    </nav>
+      </nav>
+      <div
+        id="mobile-menu"
+        class="hidden md:hidden bg-white border-t border-gray-200 p-4"
+      >
+        <a href="/" class="block py-2">Inicio</a>
+        <a href="/catalogo" class="block py-2">Catálogo</a>
+        <a
+          href="/pedido/formulario"
+          class="button-primary w-full mt-2 text-center inline-block"
+          >Hacer Pedido</a
+        >
+      </div>
+    </header>
 
-    <!-- Mobile Menu -->
-    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 p-4">
-        <a href="#inicio" class="block py-2 text-on-surface hover:text-primary">Inicio</a>
-        <a href="/catalogo" class="block py-2 text-on-surface hover:text-primary">Catálogo</a>
-        <a href="#contacto" class="block py-2 text-on-surface hover:text-primary">Contacto</a>
-        <a href="/pedido/formulario" class="block py-2">
-            <button class="button-primary w-full">Hacer Pedido</button>
-        </a>
-    </div>
-</header>
-
-<!-- HERO SECTION -->
-<section class="bg-gradient-to-r from-primary to-secondary text-white py-20 px-4" id="inicio">
-    <div class="max-w-7xl mx-auto text-center">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4 font-display-lg">Bienvenido a Tienda Web Express</h1>
-        <p class="text-xl md:text-2xl mb-8 opacity-90">Productos de calidad entregados rápidamente a tu puerta</p>
+    <section
+      class="bg-gradient-to-r from-primary to-secondary text-white py-20 px-4"
+    >
+      <div class="max-w-7xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">
+          Bienvenido a Tienda Web Express
+        </h1>
+        <p class="text-xl md:text-2xl mb-8 opacity-90">
+          Productos de calidad entregados rápidamente a tu puerta
+        </p>
         <div class="flex gap-4 justify-center flex-col sm:flex-row">
-            <a href="/catalogo" class="bg-white text-primary font-bold py-3 px-8 rounded-lg hover:bg-gray-100">
-                Ver Catálogo
-            </a>
-            <a href="/pedido/formulario" class="border-2 border-white text-white font-bold py-3 px-8 rounded-lg hover:bg-white hover:text-primary">
-                Hacer mi Pedido
-            </a>
+          <a
+            href="/catalogo"
+            class="bg-white text-primary font-bold py-3 px-8 rounded-lg hover:bg-gray-100"
+            >Ver Catálogo</a
+          >
+          <a
+            href="/pedido/formulario"
+            class="border-2 border-white text-white font-bold py-3 px-8 rounded-lg hover:bg-white hover:text-primary"
+            >Hacer mi Pedido</a
+          >
         </div>
-    </div>
-</section>
+      </div>
+    </section>
 
-<!-- FEATURED PRODUCTS -->
-<section class="py-16 px-4">
-    <div class="max-w-7xl mx-auto">
-        <h2 class="text-3xl font-bold text-primary mb-12 text-center font-headline-sm">Productos Destacados</h2>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="productos-destacados">
-            <!-- Los productos se cargarán aquí con JavaScript -->
-            <div class="text-center py-8">
-                <p class="text-gray-500">Cargando productos...</p>
+    <section class="py-16 px-4">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-3xl font-bold text-primary mb-12 text-center">
+          Productos Destacados
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div
+            th:each="producto, iterStat : ${productos}"
+            th:if="${iterStat.index < 3}"
+            class="product-card"
+          >
+            <div
+              class="bg-gray-200 h-48 flex items-center justify-center overflow-hidden"
+            >
+              <img
+                th:if="${producto.imagen != null and !producto.imagen.isEmpty()}"
+                th:src="@{${producto.imagen}}"
+                class="w-full h-full object-cover"
+              />
+              <span
+                th:unless="${producto.imagen != null and !producto.imagen.isEmpty()}"
+                class="material-symbols-outlined text-4xl text-gray-400"
+                >image</span
+              >
             </div>
+            <div class="p-4">
+              <p
+                class="text-sm text-secondary mb-2"
+                th:text="${producto.categoria.nombre}"
+              >
+                Categoría
+              </p>
+              <h3
+                class="font-bold text-lg mb-2 h-14 overflow-hidden"
+                th:text="${producto.nombre}"
+              >
+                Nombre
+              </h3>
+              <p
+                class="text-primary font-bold text-xl mb-4"
+                th:text="'$' + ${producto.precio}"
+              >
+                $0.00
+              </p>
+              <div class="flex gap-2">
+                <a
+                  th:href="@{/producto/{id}(id=${producto.id})}"
+                  class="flex-1 text-center bg-primary text-white py-2 rounded hover:bg-opacity-90"
+                  >Ver Detalle</a
+                >
+              </div>
+            </div>
+          </div>
         </div>
-    </div>
-</section>
+      </div>
+    </section>
 
-<!-- CATEGORIES -->
-<section class="bg-gray-50 py-16 px-4">
-    <div class="max-w-7xl mx-auto">
-        <h2 class="text-3xl font-bold text-primary mb-12 text-center font-headline-sm">Categorías</h2>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="categorias-grid">
-            <!-- Las categorías se cargarán aquí con JavaScript -->
-            <div class="text-center py-8">
-                <p class="text-gray-500">Cargando categorías...</p>
+    <section class="bg-gray-50 py-16 px-4">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-3xl font-bold text-primary mb-12 text-center">
+          Categorías
+        </h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <a
+            th:each="categoria : ${categorias}"
+            th:href="@{/producto/categoria/{id}(id=${categoria.id})}"
+            class="bg-white p-4 rounded-lg text-center hover:shadow-lg transition"
+          >
+            <div
+              class="bg-primary bg-opacity-10 rounded-lg p-4 mb-2 h-24 flex items-center justify-center"
+            >
+              <span class="material-symbols-outlined text-primary text-4xl"
+                >shopping_bag</span
+              >
             </div>
+            <h3 class="font-bold text-on-surface" th:text="${categoria.nombre}">
+              Categoría
+            </h3>
+          </a>
         </div>
-    </div>
-</section>
+      </div>
+    </section>
 
-<!-- FEATURES -->
-<section class="py-16 px-4">
-    <div class="max-w-7xl mx-auto">
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="text-center">
-                <div class="bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                    <span class="material-symbols-outlined">local_shipping</span>
-                </div>
-                <h3 class="font-bold text-lg mb-2">Envíos Rápidos</h3>
-                <p class="text-gray-600">Entrega en 24-48 horas</p>
-            </div>
-            <div class="text-center">
-                <div class="bg-secondary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                    <span class="material-symbols-outlined">security</span>
-                </div>
-                <h3 class="font-bold text-lg mb-2">Compra Segura</h3>
-                <p class="text-gray-600">Tus datos protegidos</p>
-            </div>
-            <div class="text-center">
-                <div class="bg-tertiary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                    <span class="material-symbols-outlined">support_agent</span>
-                </div>
-                <h3 class="font-bold text-lg mb-2">Soporte 24/7</h3>
-                <p class="text-gray-600">Estamos aquí para ayudarte</p>
-            </div>
-        </div>
-    </div>
-</section>
+    <footer class="bg-gray-900 text-white py-12 text-center">
+      <p>&copy; 2026 Tienda Web Express. Todos los derechos reservados.</p>
+    </footer>
 
-<!-- CONTACT SECTION -->
-<section class="bg-primary text-white py-16 px-4" id="contacto">
-    <div class="max-w-7xl mx-auto text-center">
-        <h2 class="text-3xl font-bold mb-8">¿Tienes preguntas?</h2>
-        <p class="text-xl mb-8 opacity-90">Contacta con nosotros y responderemos en menos de 24 horas</p>
-        <a href="/pedido/formulario" class="bg-white text-primary font-bold py-3 px-8 rounded-lg hover:bg-gray-100 inline-block">
-            Enviar Mensaje
-        </a>
-    </div>
-</section>
-
-<!-- FOOTER -->
-<footer class="bg-gray-900 text-white py-12 px-4">
-    <div class="max-w-7xl mx-auto">
-        <div class="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-                <h4 class="font-bold mb-4">Tienda Express</h4>
-                <p class="text-gray-400 text-sm">Tu tienda online de confianza</p>
-            </div>
-            <div>
-                <h4 class="font-bold mb-4">Productos</h4>
-                <ul class="text-gray-400 text-sm space-y-2">
-                    <li><a href="/catalogo" class="hover:text-white">Catálogo</a></li>
-                    <li><a href="#" class="hover:text-white">Ofertas</a></li>
-                    <li><a href="#" class="hover:text-white">Novedades</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-bold mb-4">Ayuda</h4>
-                <ul class="text-gray-400 text-sm space-y-2">
-                    <li><a href="#" class="hover:text-white">Preguntas Frecuentes</a></li>
-                    <li><a href="#" class="hover:text-white">Devoluciones</a></li>
-                    <li><a href="#" class="hover:text-white">Contacto</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-bold mb-4">Síguenos</h4>
-                <div class="flex gap-4 text-gray-400">
-                    <a href="#" class="hover:text-white">Facebook</a>
-                    <a href="#" class="hover:text-white">Instagram</a>
-                    <a href="#" class="hover:text-white">Twitter</a>
-                </div>
-            </div>
-        </div>
-        <div class="border-t border-gray-700 pt-8 text-center text-gray-400 text-sm">
-            <p>&copy; 2024 Tienda Web Express. Todos los derechos reservados.</p>
-        </div>
-    </div>
-</footer>
-
-<script>
-    // Toggle Mobile Menu
-    document.getElementById('menu-toggle').addEventListener('click', function() {
-        document.getElementById('mobile-menu').classList.toggle('hidden');
-    });
-
-    // Cargar productos destacados
-    function cargarProductos() {
-        const container = document.getElementById('productos-destacados');
-
-        // Datos de ejemplo (en producción vendrían del servidor)
-        const productos = [
-            {
-                id: 1,
-                nombre: 'Mouse inalámbrico',
-                precio: 12.99,
-                imagen: '/images/mouse.jpg',
-                categoria: 'Tecnología'
-            },
-            {
-                id: 2,
-                nombre: 'Teclado mecánico',
-                precio: 39.99,
-                imagen: '/images/teclado.jpg',
-                categoria: 'Tecnología'
-            },
-            {
-                id: 3,
-                nombre: 'Camiseta básica',
-                precio: 9.50,
-                imagen: '/images/camiseta.jpg',
-                categoria: 'Ropa'
-            }
-        ];
-
-        container.innerHTML = productos.map(producto => `
-            <div class="product-card">
-                <div class="bg-gray-200 h-48 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-4xl text-gray-400">image</span>
-                </div>
-                <div class="p-4">
-                    <p class="text-sm text-secondary font-label-md mb-2">${producto.categoria}</p>
-                    <h3 class="font-bold text-lg mb-2 h-14 overflow-hidden">${producto.nombre}</h3>
-                    <p class="text-primary font-bold text-xl mb-4">$${producto.precio.toFixed(2)}</p>
-                    <div class="flex gap-2">
-                        <a href="/producto/${producto.id}" class="flex-1 text-center bg-primary text-white py-2 rounded hover:bg-opacity-90 font-label-md">
-                            Ver Detalle
-                        </a>
-                        <button class="flex-1 bg-secondary text-white py-2 rounded hover:bg-opacity-90 font-label-md" onclick="agregarAlCarrito(${producto.id})">
-                            Al Carrito
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // Cargar categorías
-    function cargarCategorias() {
-        const container = document.getElementById('categorias-grid');
-
-        const categorias = [
-            { id: 1, nombre: 'Tecnología' },
-            { id: 2, nombre: 'Ropa' },
-            { id: 3, nombre: 'Hogar' },
-            { id: 4, nombre: 'Accesorios' }
-        ];
-
-        container.innerHTML = categorias.map(categoria => `
-            <a href="/producto/categoria/${categoria.id}" class="bg-white p-4 rounded-lg text-center hover:shadow-lg transition">
-                <div class="bg-primary bg-opacity-10 rounded-lg p-4 mb-2 h-24 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-primary text-4xl">shopping_bag</span>
-                </div>
-                <h3 class="font-bold text-on-surface">${categoria.nombre}</h3>
-            </a>
-        `).join('');
-    }
-
-    // Agregar al carrito
-    function agregarAlCarrito(productoId) {
-        alert(`Producto ${productoId} agregado al carrito. Ir a formulario de pedido para completar la compra.`);
-    }
-
-    // Inicializar
-    window.addEventListener('DOMContentLoaded', function() {
-        cargarProductos();
-        cargarCategorias();
-    });
-</script>
-
-</body>
+    <script th:src="@{/js/main.js}"></script>
+  </body>
 </html>
