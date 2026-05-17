@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Hacer Pedido - Tienda Web Express</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#006972",
+                        "secondary": "#306669",
+                        "surface": "#fff9ef",
+                        "on-surface": "#1d1b16"
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        .button-primary {
+            background-color: #006972;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button-primary:hover {
+            background-color: #00525a;
+        }
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e7e2d9;
+            border-radius: 4px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #006972;
+            box-shadow: 0 0 0 3px rgba(0, 105, 114, 0.1);
+        }
+        .input-field.error {
+            border-color: #ba1a1a;
+        }
+        .error-message {
+            color: #ba1a1a;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        .step-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e7e2d9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1d1b16;
+        }
+        .step-number.active {
+            background-color: #006972;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md">
+
+<!-- HEADER / NAVBAR -->
+<header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                <span class="text-white font-bold text-lg">T</span>
+            </div>
+            <h1 class="text-2xl font-bold text-primary">Tienda Express</h1>
+        </div>
+
+        <div class="hidden md:flex items-center gap-8">
+            <a href="/" class="text-on-surface hover:text-primary">Inicio</a>
+            <a href="/catalogo" class="text-on-surface hover:text-primary">Catálogo</a>
+            <a href="/#contacto" class="text-on-surface hover:text-primary">Contacto</a>
+        </div>
+
+        <button id="menu-toggle" class="md:hidden">
+            <span class="material-symbols-outlined text-primary">menu</span>
+        </button>
+    </nav>
+
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 p-4">
+        <a href="/" class="block py-2">Inicio</a>
+        <a href="/catalogo" class="block py-2">Catálogo</a>
+        <a href="/#contacto" class="block py-2">Contacto</a>
+    </div>
+</header>
+
+<!-- BREADCRUMB -->
+<section class="bg-gray-50 px-4 py-4">
+    <div class="max-w-7xl mx-auto">
+        <a href="/" class="text-primary hover:underline">Inicio</a> /
+        <span class="text-gray-600">Hacer Pedido</span>
+    </div>
+</section>
+
+<!-- MAIN CONTENT -->
+<div class="max-w-7xl mx-auto px-4 py-12">
+    <!-- PROGRESS INDICATOR -->
+    <div class="mb-12 flex justify-center gap-8">
+        <div class="step-indicator">
+            <div class="step-number active">1</div>
+            <span class="hidden sm:inline">Información</span>
+        </div>
+        <div class="h-1 bg-gray-300 self-center flex-1 max-w-xs"></div>
+        <div class="step-indicator">
+            <div class="step-number">2</div>
+            <span class="hidden sm:inline">Producto</span>
+        </div>
+        <div class="h-1 bg-gray-300 self-center flex-1 max-w-xs"></div>
+        <div class="step-indicator">
+            <div class="step-number">3</div>
+            <span class="hidden sm:inline">Resumen</span>
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-3 gap-12">
+        <!-- FORM SECTION -->
+        <div class="lg:col-span-2">
+            <div class="bg-white p-8 rounded-lg border border-gray-200">
+                <h1 class="text-3xl font-bold text-primary mb-8">Completa tu Pedido</h1>
+
+                <form id="formulario-pedido" action="/pedido/crear" method="POST" onsubmit="return validarFormulario()">
+
+                    <!-- SECTION 1: CUSTOMER INFO -->
+                    <fieldset class="mb-10 pb-10 border-b border-gray-200">
+                        <legend class="text-xl font-bold text-on-surface mb-6">1. Información Personal</legend>
+
+                        <!-- Nombre -->
+                        <div class="mb-6">
+                            <label for="nombre" class="block text-sm font-bold mb-2">Nombre Completo *</label>
+                            <input
+                                    type="text"
+                                    id="nombre"
+                                    name="nombreCliente"
+                                    class="input-field"
+                                    placeholder="Tu nombre completo"
+                                    required>
+                            <span class="error-message" id="error-nombre"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-6">
+                            <label for="correo" class="block text-sm font-bold mb-2">Correo Electrónico *</label>
+                            <input
+                                    type="email"
+                                    id="correo"
+                                    name="correo"
+                                    class="input-field"
+                                    placeholder="tu@correo.com"
+                                    required>
+                            <span class="error-message" id="error-correo"></span>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="mb-6">
+                            <label for="telefono" class="block text-sm font-bold mb-2">Teléfono</label>
+                            <input
+                                    type="tel"
+                                    id="telefono"
+                                    class="input-field"
+                                    placeholder="+506 2222-3333">
+                        </div>
+                    </fieldset>
+
+                    <!-- SECTION 2: PRODUCT SELECTION -->
+                    <fieldset class="mb-10 pb-10 border-b border-gray-200">
+                        <legend class="text-xl font-bold text-on-surface mb-6">2. Selecciona tu Producto</legend>
+
+                        <!-- Product Select -->
+                        <div class="mb-6">
+                            <label for="producto" class="block text-sm font-bold mb-2">Producto *</label>
+                            <select id="producto" name="productoId" class="input-field" onchange="actualizarProducto()" required>
+                                <option value="">-- Selecciona un producto --</option>
+                                <option value="1">Mouse inalámbrico - $12.99</option>
+                                <option value="2">Teclado mecánico - $39.99</option>
+                                <option value="3">Camiseta básica - $9.50</option>
+                                <option value="4">Taza personalizada - $6.75</option>
+                                <option value="5">Mochila urbana - $24.99</option>
+                            </select>
+                            <span class="error-message" id="error-producto"></span>
+                        </div>
+
+                        <!-- Quantity -->
+                        <div class="mb-6">
+                            <label for="cantidad" class="block text-sm font-bold mb-2">Cantidad *</label>
+                            <input
+                                    type="number"
+                                    id="cantidad"
+                                    name="cantidad"
+                                    class="input-field"
+                                    value="1"
+                                    min="1"
+                                    max="100"
+                                    required>
+                            <span class="error-message" id="error-cantidad"></span>
+                        </div>
+
+                        <!-- Product Info -->
+                        <div id="info-producto" class="bg-gray-50 p-4 rounded-lg hidden">
+                            <div class="flex gap-4">
+                                <div class="bg-gray-300 w-20 h-20 rounded flex-shrink-0 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-gray-400">image</span>
+                                </div>
+                                <div class="flex-1">
+                                    <p id="info-nombre" class="font-bold">Producto seleccionado</p>
+                                    <p id="info-precio" class="text-primary font-bold text-lg">$0.00</p>
+                                    <p id="info-stock" class="text-sm text-gray-600">Stock disponible</p>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <!-- SECTION 3: COMMENTS -->
+                    <fieldset class="mb-10">
+                        <legend class="text-xl font-bold text-on-surface mb-6">3. Notas Adicionales</legend>
+
+                        <!-- Comments -->
+                        <div class="mb-6">
+                            <label for="comentario" class="block text-sm font-bold mb-2">Comentarios o Dirección de Entrega</label>
+                            <textarea
+                                    id="comentario"
+                                    name="comentario"
+                                    class="input-field"
+                                    rows="4"
+                                    placeholder="Incluye dirección de entrega, instrucciones especiales, etc."></textarea>
+                        </div>
+
+                        <!-- Terms -->
+                        <div class="mb-6 flex items-start gap-3">
+                            <input
+                                    type="checkbox"
+                                    id="terminos"
+                                    class="mt-1"
+                                    required>
+                            <label for="terminos" class="text-sm">
+                                Acepto los <a href="#" class="text-primary hover:underline">términos y condiciones</a>
+                                y la <a href="#" class="text-primary hover:underline">política de privacidad</a>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <!-- SUBMIT BUTTONS -->
+                    <div class="flex gap-4">
+                        <button type="reset" class="flex-1 border-2 border-primary text-primary py-3 rounded hover:bg-primary hover:bg-opacity-5 font-bold">
+                            Limpiar
+                        </button>
+                        <button type="submit" class="flex-1 button-primary py-3 text-lg">
+                            Continuar al Resumen
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- SIDEBAR: ORDER SUMMARY -->
+        <div class="lg:col-span-1">
+            <div class="bg-white p-6 rounded-lg border border-gray-200 sticky top-24">
+                <h2 class="text-lg font-bold text-primary mb-6">Resumen del Pedido</h2>
+
+                <!-- Product Summary -->
+                <div id="resumen-producto" class="mb-6 pb-6 border-b border-gray-200">
+                    <p class="text-sm text-gray-600 mb-2">Producto</p>
+                    <p id="resumen-nombre" class="font-bold text-sm">No seleccionado</p>
+                    <div class="flex justify-between mt-2 text-sm">
+                        <span id="resumen-cantidad" class="text-gray-600">Cantidad: 0</span>
+                        <span id="resumen-precio" class="font-bold">$0.00</span>
+                    </div>
+                </div>
+
+                <!-- Shipping -->
+                <div class="mb-6 pb-6 border-b border-gray-200">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm text-gray-600">Envío</span>
+                        <span id="envio-precio" class="font-bold">Gratis</span>
+                    </div>
+                </div>
+
+                <!-- Total -->
+                <div class="mb-6">
+                    <div class="flex justify-between text-lg">
+                        <span class="font-bold">Total</span>
+                        <span id="total-precio" class="font-bold text-primary text-2xl">$0.00</span>
+                    </div>
+                </div>
+
+                <!-- Info Boxes -->
+                <div class="space-y-4 pt-6 border-t border-gray-200">
+                    <div class="flex gap-2 text-sm">
+                        <span class="material-symbols-outlined text-green-600 flex-shrink-0">check_circle</span>
+                        <span><strong>Entrega rápida</strong> en 24-48 horas</span>
+                    </div>
+                    <div class="flex gap-2 text-sm">
+                        <span class="material-symbols-outlined text-green-600 flex-shrink-0">check_circle</span>
+                        <span><strong>Compra segura</strong> con encriptación SSL</span>
+                    </div>
+                    <div class="flex gap-2 text-sm">
+                        <span class="material-symbols-outlined text-green-600 flex-shrink-0">check_circle</span>
+                        <span><strong>Soporte 24/7</strong> para tus preguntas</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-gray-900 text-white py-12 px-4 mt-20">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+                <h4 class="font-bold mb-4">Tienda Express</h4>
+                <p class="text-gray-400 text-sm">Tu tienda online de confianza</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Productos</h4>
+                <ul class="text-gray-400 text-sm space-y-2">
+                    <li><a href="/catalogo" class="hover:text-white">Catálogo</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Ayuda</h4>
+                <ul class="text-gray-400 text-sm space-y-2">
+                    <li><a href="#" class="hover:text-white">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 pt-8 text-center text-gray-400 text-sm">
+            <p>&copy; 2024 Tienda Web Express.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+
+    const productosData = {
+        1: { nombre: 'Mouse inalámbrico', precio: 12.99, stock: 25 },
+        2: { nombre: 'Teclado mecánico', precio: 39.99, stock: 15 },
+        3: { nombre: 'Camiseta básica', precio: 9.50, stock: 40 },
+        4: { nombre: 'Taza personalizada', precio: 6.75, stock: 30 },
+        5: { nombre: 'Mochila urbana', precio: 24.99, stock: 20 }
+    };
+
+    function actualizarProducto() {
+        const productoId = document.getElementById('producto').value;
+        const infoDiv = document.getElementById('info-producto');
+
+        if (productoId && productosData[productoId]) {
+            const producto = productosData[productoId];
+            document.getElementById('info-nombre').textContent = producto.nombre;
+            document.getElementById('info-precio').textContent = '$' + producto.precio.toFixed(2);
+            document.getElementById('info-stock').textContent = 'Stock: ' + producto.stock + ' disponibles';
+            infoDiv.classList.remove('hidden');
+            actualizarResumen();
+        } else {
+            infoDiv.classList.add('hidden');
+        }
+    }
+
+    function actualizarResumen() {
+        const productoId = document.getElementById('producto').value;
+        const cantidad = parseInt(document.getElementById('cantidad').value) || 1;
+
+        if (productoId && productosData[productoId]) {
+            const producto = productosData[productoId];
+            const subtotal = producto.precio * cantidad;
+
+            document.getElementById('resumen-nombre').textContent = producto.nombre;
+            document.getElementById('resumen-cantidad').textContent = 'Cantidad: ' + cantidad;
+            document.getElementById('resumen-precio').textContent = '$' + (producto.precio * cantidad).toFixed(2);
+            document.getElementById('total-precio').textContent = '$' + subtotal.toFixed(2);
+        }
+    }
+
+    function validarFormulario() {
+        let valido = true;
+
+        // Limpiar errores previos
+        document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+        document.querySelectorAll('.input-field.error').forEach(el => el.classList.remove('error'));
+
+        // Validar nombre
+        const nombre = document.getElementById('nombre').value.trim();
+        if (!nombre) {
+            document.getElementById('error-nombre').textContent = 'El nombre es requerido';
+            document.getElementById('nombre').classList.add('error');
+            valido = false;
+        } else if (nombre.length < 3) {
+            document.getElementById('error-nombre').textContent = 'El nombre debe tener al menos 3 caracteres';
+            document.getElementById('nombre').classList.add('error');
+            valido = false;
+        }
+
+        // Validar email
+        const correo = document.getElementById('correo').value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!correo) {
+            document.getElementById('error-correo').textContent = 'El correo es requerido';
+            document.getElementById('correo').classList.add('error');
+            valido = false;
+        } else if (!emailRegex.test(correo)) {
+            document.getElementById('error-correo').textContent = 'Correo inválido';
+            document.getElementById('correo').classList.add('error');
+            valido = false;
+        }
+
+        // Validar producto
+        const productoId = document.getElementById('producto').value;
+        if (!productoId) {
+            document.getElementById('error-producto').textContent = 'Debes seleccionar un producto';
+            document.getElementById('producto').classList.add('error');
+            valido = false;
+        }
+
+        // Validar cantidad
+        const cantidad = parseInt(document.getElementById('cantidad').value);
+        if (!cantidad || cantidad < 1) {
+            document.getElementById('error-cantidad').textContent = 'La cantidad debe ser mayor a 0';
+            document.getElementById('cantidad').classList.add('error');
+            valido = false;
+        }
+
+        // Validar términos
+        if (!document.getElementById('terminos').checked) {
+            alert('Debes aceptar los términos y condiciones');
+            valido = false;
+        }
+
+        if (valido) {
+            console.log('Formulario válido, enviando...');
+        }
+
+        return valido;
+    }
+
+    // Escuchadores de eventos
+    document.getElementById('cantidad').addEventListener('change', actualizarResumen);
+    document.getElementById('producto').addEventListener('change', actualizarProducto);
+
+    window.addEventListener('DOMContentLoaded', function() {
+        actualizarResumen();
+    });
+</script>
+
+</body>
+</html>

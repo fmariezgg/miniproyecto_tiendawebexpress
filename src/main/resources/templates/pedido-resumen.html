@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Resumen del Pedido - Tienda Web Express</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#006972",
+                        "secondary": "#306669",
+                        "surface": "#fff9ef",
+                        "on-surface": "#1d1b16"
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        .button-primary {
+            background-color: #006972;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button-primary:hover {
+            background-color: #00525a;
+        }
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #2c6956;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+        .success-icon span {
+            font-size: 48px;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md">
+
+<!-- HEADER / NAVBAR -->
+<header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                <span class="text-white font-bold text-lg">T</span>
+            </div>
+            <h1 class="text-2xl font-bold text-primary">Tienda Express</h1>
+        </div>
+
+        <div class="hidden md:flex items-center gap-8">
+            <a href="/" class="text-on-surface hover:text-primary">Inicio</a>
+            <a href="/catalogo" class="text-on-surface hover:text-primary">Catálogo</a>
+            <a href="/#contacto" class="text-on-surface hover:text-primary">Contacto</a>
+        </div>
+
+        <button id="menu-toggle" class="md:hidden">
+            <span class="material-symbols-outlined text-primary">menu</span>
+        </button>
+    </nav>
+
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 p-4">
+        <a href="/" class="block py-2">Inicio</a>
+        <a href="/catalogo" class="block py-2">Catálogo</a>
+        <a href="/#contacto" class="block py-2">Contacto</a>
+    </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<div class="max-w-4xl mx-auto px-4 py-12">
+
+    <!-- SUCCESS MESSAGE -->
+    <div class="bg-green-50 border border-green-200 rounded-lg p-8 mb-12 text-center">
+        <div class="success-icon">
+            <span class="material-symbols-outlined">check</span>
+        </div>
+        <h1 class="text-3xl font-bold text-green-700 mt-6 mb-2">¡Pedido Confirmado!</h1>
+        <p class="text-green-600 text-lg mb-4">Tu pedido ha sido registrado exitosamente</p>
+        <p id="pedido-numero" class="text-gray-600">Número de Pedido: #<strong id="numero-pedido">0000</strong></p>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="grid lg:grid-cols-3 gap-8">
+
+        <!-- DETAILS -->
+        <div class="lg:col-span-2 space-y-6">
+
+            <!-- CUSTOMER INFORMATION -->
+            <div class="bg-white p-8 rounded-lg border border-gray-200">
+                <h2 class="text-2xl font-bold text-primary mb-6">Información del Cliente</h2>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">Nombre</p>
+                        <p id="resumen-nombre" class="font-bold text-lg">Nombre del Cliente</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">Correo</p>
+                        <p id="resumen-correo" class="font-bold text-lg">cliente@correo.com</p>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-sm text-gray-600 mb-2">Comentarios/Dirección</p>
+                    <p id="resumen-comentario" class="text-gray-700 leading-relaxed">
+                        Los comentarios adicionales aparecerán aquí
+                    </p>
+                </div>
+            </div>
+
+            <!-- ORDER ITEMS -->
+            <div class="bg-white p-8 rounded-lg border border-gray-200">
+                <h2 class="text-2xl font-bold text-primary mb-6">Detalles del Pedido</h2>
+
+                <div class="space-y-4" id="items-pedido">
+                    <!-- Los items se llenarán con JavaScript -->
+                    <div class="flex items-start gap-4 pb-4 border-b border-gray-200">
+                        <div class="bg-gray-200 w-20 h-20 rounded flex-shrink-0 flex items-center justify-center">
+                            <span class="material-symbols-outlined">image</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-bold">Producto Ejemplo</p>
+                            <p class="text-sm text-gray-600">Cantidad: 1</p>
+                        </div>
+                        <p class="font-bold text-primary">$0.00</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TIMELINE -->
+            <div class="bg-white p-8 rounded-lg border border-gray-200">
+                <h2 class="text-2xl font-bold text-primary mb-6">¿Cuál es el próximo paso?</h2>
+
+                <div class="space-y-6">
+                    <!-- Step 1 -->
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold">
+                                1
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg mb-1">Confirmación por Correo</h3>
+                            <p class="text-gray-600">Recibirás un correo de confirmación en los próximos minutos</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-12 h-12 bg-secondary text-white rounded-full flex items-center justify-center font-bold">
+                                2
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg mb-1">Procesamiento</h3>
+                            <p class="text-gray-600">Tu pedido será procesado y preparado para envío</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0">
+                            <div class="w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">
+                                3
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg mb-1">Envío</h3>
+                            <p class="text-gray-600">Recibirás tu pedido en 24-48 horas</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SIDEBAR: ORDER SUMMARY -->
+        <div class="lg:col-span-1">
+            <!-- SUMMARY BOX -->
+            <div class="bg-white p-6 rounded-lg border border-gray-200 sticky top-24">
+                <h2 class="text-lg font-bold text-primary mb-6">Resumen Financiero</h2>
+
+                <!-- Items -->
+                <div class="mb-4 pb-4 border-b border-gray-200">
+                    <div class="flex justify-between mb-2 text-sm">
+                        <span class="text-gray-600">Subtotal</span>
+                        <span id="subtotal" class="font-bold">$0.00</span>
+                    </div>
+                    <div class="flex justify-between mb-2 text-sm">
+                        <span class="text-gray-600">Impuestos</span>
+                        <span id="impuestos" class="font-bold">$0.00</span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-600">Envío</span>
+                        <span id="envio" class="font-bold">Gratis</span>
+                    </div>
+                </div>
+
+                <!-- Total -->
+                <div class="mb-6">
+                    <div class="flex justify-between">
+                        <span class="font-bold">Total</span>
+                        <span id="total" class="font-bold text-primary text-2xl">$0.00</span>
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="bg-blue-50 p-4 rounded-lg mb-6">
+                    <div class="flex gap-2 mb-2">
+                        <span class="material-symbols-outlined text-blue-600">info</span>
+                        <p class="text-sm font-bold text-blue-600">Estado del Pedido</p>
+                    </div>
+                    <p id="estado-pedido" class="text-sm text-blue-700">Pendiente de Procesamiento</p>
+                </div>
+
+                <!-- Actions -->
+                <div class="space-y-3">
+                    <button class="w-full button-primary py-3 rounded flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">download</span>
+                        Descargar Recibo
+                    </button>
+                    <button class="w-full bg-gray-200 text-on-surface py-3 rounded hover:bg-gray-300" onclick="compartirPedido()">
+                        Compartir
+                    </button>
+                </div>
+
+                <!-- Support -->
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <p class="text-sm text-gray-600 mb-3">¿Necesitas ayuda?</p>
+                    <a href="/#contacto" class="text-primary hover:underline text-sm font-bold">
+                        Contactar con Soporte
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RECOMMENDATIONS -->
+    <div class="mt-12">
+        <h2 class="text-2xl font-bold text-primary mb-6">Te Podría Interesar</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <a href="/catalogo" class="bg-white p-4 rounded-lg border border-gray-200 text-center hover:shadow-lg transition">
+                <div class="bg-gray-200 h-24 rounded flex items-center justify-center mb-3">
+                    <span class="material-symbols-outlined text-gray-400 text-4xl">image</span>
+                </div>
+                <p class="font-bold text-sm">Producto Recomendado</p>
+                <p class="text-primary font-bold mt-2">$19.99</p>
+            </a>
+            <a href="/catalogo" class="bg-white p-4 rounded-lg border border-gray-200 text-center hover:shadow-lg transition">
+                <div class="bg-gray-200 h-24 rounded flex items-center justify-center mb-3">
+                    <span class="material-symbols-outlined text-gray-400 text-4xl">image</span>
+                </div>
+                <p class="font-bold text-sm">Producto Recomendado</p>
+                <p class="text-primary font-bold mt-2">$29.99</p>
+            </a>
+            <a href="/catalogo" class="bg-white p-4 rounded-lg border border-gray-200 text-center hover:shadow-lg transition">
+                <div class="bg-gray-200 h-24 rounded flex items-center justify-center mb-3">
+                    <span class="material-symbols-outlined text-gray-400 text-4xl">image</span>
+                </div>
+                <p class="font-bold text-sm">Producto Recomendado</p>
+                <p class="text-primary font-bold mt-2">$14.99</p>
+            </a>
+            <a href="/catalogo" class="bg-white p-4 rounded-lg border border-gray-200 text-center hover:shadow-lg transition">
+                <div class="bg-gray-200 h-24 rounded flex items-center justify-center mb-3">
+                    <span class="material-symbols-outlined text-gray-400 text-4xl">image</span>
+                </div>
+                <p class="font-bold text-sm">Producto Recomendado</p>
+                <p class="text-primary font-bold mt-2">$39.99</p>
+            </a>
+        </div>
+    </div>
+
+    <!-- CTA SECTION -->
+    <div class="mt-12 bg-gradient-to-r from-primary to-secondary text-white p-8 rounded-lg text-center">
+        <h2 class="text-2xl font-bold mb-4">¡Sigue Comprando!</h2>
+        <p class="mb-6">Descubre más productos en nuestro catálogo</p>
+        <a href="/catalogo" class="bg-white text-primary font-bold py-3 px-8 rounded hover:bg-gray-100 inline-block">
+            Volver al Catálogo
+        </a>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-gray-900 text-white py-12 px-4 mt-20">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+                <h4 class="font-bold mb-4">Tienda Express</h4>
+                <p class="text-gray-400 text-sm">Tu tienda online de confianza</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Productos</h4>
+                <ul class="text-gray-400 text-sm space-y-2">
+                    <li><a href="/catalogo" class="hover:text-white">Catálogo</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Ayuda</h4>
+                <ul class="text-gray-400 text-sm space-y-2">
+                    <li><a href="#" class="hover:text-white">Contacto</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 pt-8 text-center text-gray-400 text-sm">
+            <p>&copy; 2024 Tienda Web Express.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+
+    function llenarResumen() {
+        // Datos de ejemplo (en producción vendrían del servidor)
+        const pedidoData = {
+            id: 1001,
+            cliente: 'Juan Pérez',
+            correo: 'juan@correo.com',
+            comentario: 'Entrega en la dirección: Calle Principal 123, Apto 4B',
+            items: [
+                { nombre: 'Mouse inalámbrico', cantidad: 1, precio: 12.99, subtotal: 12.99 }
+            ],
+            subtotal: 12.99,
+            impuestos: 1.56,
+            envio: 0,
+            total: 14.55
+        };
+
+        // Llenar información
+        document.getElementById('numero-pedido').textContent = String(pedidoData.id).padStart(4, '0');
+        document.getElementById('resumen-nombre').textContent = pedidoData.cliente;
+        document.getElementById('resumen-correo').textContent = pedidoData.correo;
+        document.getElementById('resumen-comentario').textContent = pedidoData.comentario || 'Sin comentarios';
+
+        // Llenar items
+        const itemsContainer = document.getElementById('items-pedido');
+        itemsContainer.innerHTML = pedidoData.items.map(item => `
+            <div class="flex items-start gap-4 pb-4 border-b border-gray-200">
+                <div class="bg-gray-200 w-20 h-20 rounded flex-shrink-0 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-gray-400">image</span>
+                </div>
+                <div class="flex-1">
+                    <p class="font-bold">${item.nombre}</p>
+                    <p class="text-sm text-gray-600">Cantidad: ${item.cantidad}</p>
+                </div>
+                <p class="font-bold text-primary">$${item.subtotal.toFixed(2)}</p>
+            </div>
+        `).join('');
+
+        // Llenar resumen financiero
+        document.getElementById('subtotal').textContent = '$' + pedidoData.subtotal.toFixed(2);
+        document.getElementById('impuestos').textContent = '$' + pedidoData.impuestos.toFixed(2);
+        document.getElementById('total').textContent = '$' + pedidoData.total.toFixed(2);
+
+        // Mostrar mensaje de envío
+        if (pedidoData.envio === 0) {
+            document.getElementById('envio').textContent = 'Gratis';
+        } else {
+            document.getElementById('envio').textContent = '$' + pedidoData.envio.toFixed(2);
+        }
+    }
+
+    function compartirPedido() {
+        const numeroPedido = document.getElementById('numero-pedido').textContent;
+        const mensaje = `He realizado un pedido en Tienda Web Express. Número de pedido: #${numeroPedido}`;
+
+        if (navigator.share) {
+            navigator.share({
+                title: 'Mi Pedido',
+                text: mensaje,
+                url: window.location.href
+            });
+        } else {
+            alert(mensaje);
+        }
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        llenarResumen();
+    });
+</script>
+
+</body>
+</html>

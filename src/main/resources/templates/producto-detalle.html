@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Detalle del Producto - Tienda Web Express</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#006972",
+                        "secondary": "#306669",
+                        "surface": "#fff9ef",
+                        "on-surface": "#1d1b16"
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        .button-primary {
+            background-color: #006972;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button-primary:hover {
+            background-color: #00525a;
+        }
+        .cantidad-control {
+            display: flex;
+            align-items: center;
+            border: 1px solid #e7e2d9;
+            border-radius: 4px;
+            width: fit-content;
+        }
+        .cantidad-control button {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .cantidad-control input {
+            width: 60px;
+            text-align: center;
+            border: none;
+            font-weight: bold;
+        }
+        .rating {
+            color: #fbbf24;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md">
+
+<!-- HEADER / NAVBAR -->
+<header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                <span class="text-white font-bold text-lg">T</span>
+            </div>
+            <h1 class="text-2xl font-bold text-primary">Tienda Express</h1>
+        </div>
+
+        <div class="hidden md:flex items-center gap-8">
+            <a href="/" class="text-on-surface hover:text-primary">Inicio</a>
+            <a href="/catalogo" class="text-on-surface hover:text-primary">Catálogo</a>
+            <a href="/#contacto" class="text-on-surface hover:text-primary">Contacto</a>
+            <a href="/pedido/formulario" class="button-primary">Hacer Pedido</a>
+        </div>
+
+        <button id="menu-toggle" class="md:hidden">
+            <span class="material-symbols-outlined text-primary">menu</span>
+        </button>
+    </nav>
+
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 p-4">
+        <a href="/" class="block py-2">Inicio</a>
+        <a href="/catalogo" class="block py-2">Catálogo</a>
+        <a href="/#contacto" class="block py-2">Contacto</a>
+        <button class="button-primary w-full">Hacer Pedido</button>
+    </div>
+</header>
+
+<!-- BREADCRUMB -->
+<section class="bg-gray-50 px-4 py-4">
+    <div class="max-w-7xl mx-auto">
+        <a href="/" class="text-primary hover:underline">Inicio</a> /
+        <a href="/catalogo" class="text-primary hover:underline">Catálogo</a> /
+        <span id="breadcrumb-producto" class="text-gray-600">Producto</span>
+    </div>
+</section>
+
+<!-- PRODUCT DETAIL -->
+<div class="max-w-7xl mx-auto px-4 py-12">
+    <div class="grid md:grid-cols-2 gap-12">
+
+        <!-- PRODUCT IMAGE -->
+        <div class="flex flex-col gap-4">
+            <div class="bg-gray-200 rounded-lg h-96 flex items-center justify-center overflow-hidden">
+                <img id="producto-imagen" src="" alt="Producto" class="w-full h-full object-cover">
+                <span id="img-placeholder" class="material-symbols-outlined text-6xl text-gray-400">image</span>
+            </div>
+            <div class="flex gap-4">
+                <button class="flex-1 bg-gray-200 rounded h-20 flex items-center justify-center cursor-pointer hover:bg-gray-300">
+                    <span class="material-symbols-outlined">favorite</span>
+                </button>
+                <button class="flex-1 bg-gray-200 rounded h-20 flex items-center justify-center cursor-pointer hover:bg-gray-300">
+                    <span class="material-symbols-outlined">share</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- PRODUCT INFO -->
+        <div>
+            <!-- Category & Rating -->
+            <div class="mb-4">
+                <span id="producto-categoria" class="text-sm text-secondary font-bold bg-secondary bg-opacity-10 px-3 py-1 rounded">Categoría</span>
+            </div>
+
+            <!-- Title -->
+            <h1 id="producto-nombre" class="text-4xl font-bold text-on-surface mb-2">Nombre del Producto</h1>
+
+            <!-- Rating -->
+            <div class="flex items-center gap-2 mb-6">
+                <div class="rating">★★★★★</div>
+                <span class="text-gray-600">(48 reseñas)</span>
+            </div>
+
+            <!-- Price -->
+            <div class="mb-6">
+                <p class="text-sm text-gray-600 mb-1">Precio</p>
+                <p id="producto-precio" class="text-5xl font-bold text-primary">$0.00</p>
+            </div>
+
+            <!-- Stock Status -->
+            <div class="mb-6 p-4 rounded-lg" id="stock-status">
+                <p id="stock-text" class="text-green-600 font-bold">En stock</p>
+            </div>
+
+            <!-- Description -->
+            <div class="mb-8 pb-8 border-b border-gray-200">
+                <h3 class="font-bold text-lg mb-3">Descripción</h3>
+                <p id="producto-descripcion" class="text-gray-700 leading-relaxed">
+                    Descripción del producto
+                </p>
+            </div>
+
+            <!-- Product Features -->
+            <div class="mb-8 pb-8 border-b border-gray-200">
+                <h3 class="font-bold text-lg mb-3">Características</h3>
+                <ul id="caracteristicas-list" class="space-y-2">
+                    <li class="flex items-start gap-2">
+                        <span class="material-symbols-outlined text-primary mt-1">check_circle</span>
+                        <span>Característica del producto</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="space-y-4">
+                <!-- Quantity Selector -->
+                <div>
+                    <p class="text-sm text-gray-600 mb-2">Cantidad</p>
+                    <div class="cantidad-control">
+                        <button onclick="disminuirCantidad()">−</button>
+                        <input type="number" id="cantidad" value="1" min="1" max="100">
+                        <button onclick="aumentarCantidad()">+</button>
+                    </div>
+                </div>
+
+                <!-- Add to Cart Button -->
+                <form action="/pedido/crear" method="POST" class="space-y-3">
+                    <input type="hidden" name="productoId" id="form-productoId">
+                    <input type="hidden" name="cantidad" id="form-cantidad">
+
+                    <button type="submit" class="w-full button-primary py-4 text-lg flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined">shopping_cart</span>
+                        Agregar al Carrito
+                    </button>
+
+                    <button type="button" onclick="irAlFormulario()" class="w-full border-2 border-primary text-primary py-4 text-lg font-bold rounded hover:bg-primary hover:bg-opacity-5">
+                        Comprar Ahora
+                    </button>
+                </form>
+
+                <!-- Share & Save -->
+                <div class="flex gap-2 pt-4">
+                    <button class="flex-1 flex items-center justify-center gap-2 py-3 border border-gray-300 rounded hover:bg-gray-50">
+                        <span class="material-symbols-outlined">favorite_border</span>
+                        Guardar
+                    </button>
+                    <button class="flex-1 flex items-center justify-center gap-2 py-3 border border-gray-300 rounded hover:bg-gray-50">
+                        <span class="material-symbols-outlined">share</span>
+                        Compartir
+                    </button>
+                </div>
+            </div>
+
+            <!-- Delivery Info -->
+            <div class="mt-8 p-4 bg-gray-50 rounded-lg space-y-3">
+                <div class="flex gap-3">
+                    <span class="material-symbols-outlined text-primary">local_shipping</span>
+                    <div>
+                        <p class="font-bold">Envío Gratis</p>
+                        <p class="text-sm text-gray-600">En pedidos mayores a $50</p>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <span class="material-symbols-outlined text-primary">verified_user</span>
+                    <div>
+                        <p class="font-bold">100% Seguro</p>
+                        <p class="text-sm text-gray-600">Pago protegido garantizado</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RELATED PRODUCTS -->
+    <div class="mt-20 pt-12 border-t border-gray-200">
+        <h2 class="text-3xl font-bold text-primary mb-8">Productos Relacionados</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="productos-relacionados">
+            <div class="text-center py-8">Cargando productos relacionados...</div>
+        </div>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-gray-900 text-white py-12 px-4 mt-20">
+    <div class="max-w-7xl mx-auto">
+        <div class="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+                <h4 class="font-bold mb-4">Tienda Express</h4>
+                <p class="text-gray-400 text-sm">Tu tienda online de confianza</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Productos</h4>
+                <ul class="text-gray-400 text-sm space-y-2">
+                    <li><a href="/catalogo" class="hover:text-white">Catálogo</a></li>
+                    <li><a href="#" class="hover:text-white">Ofertas</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Ayuda</h4>
+                <ul class="text-gray-400 text-sm space-y-2">
+                    <li><a href="#" class="hover:text-white">Contacto</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4">Síguenos</h4>
+                <div class="flex gap-4 text-gray-400">
+                    <a href="#" class="hover:text-white">Facebook</a>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 pt-8 text-center text-gray-400 text-sm">
+            <p>&copy; 2024 Tienda Web Express.</p>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.getElementById('menu-toggle').addEventListener('click', function() {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+
+    // Datos de ejemplo
+    const productosData = {
+        1: { id: 1, nombre: 'Mouse inalámbrico', precio: 12.99, imagen: '/images/mouse.jpg', categoria: 'Tecnología', descripcion: 'Mouse ergonómico con conexión USB inalámbrica. Perfecto para trabajar largas jornadas sin fatiga.', stock: 25 },
+        2: { id: 2, nombre: 'Teclado mecánico', precio: 39.99, imagen: '/images/teclado.jpg', categoria: 'Tecnología', descripcion: 'Teclado mecánico con iluminación LED RGB. Ideal para gaming y trabajo profesional.', stock: 15 },
+        3: { id: 3, nombre: 'Camiseta básica', precio: 9.50, imagen: '/images/camiseta.jpg', categoria: 'Ropa', descripcion: 'Camiseta de algodón 100% disponible en varias tallas y colores.', stock: 40 }
+    };
+
+    function cargarProducto() {
+        // Obtener el ID del URL
+        const url = window.location.pathname;
+        const productoId = parseInt(url.split('/').pop());
+
+        const producto = productosData[productoId] || productosData[1];
+
+        // Llenar la información del producto
+        document.getElementById('producto-nombre').textContent = producto.nombre;
+        document.getElementById('producto-precio').textContent = '$' + producto.precio.toFixed(2);
+        document.getElementById('producto-descripcion').textContent = producto.descripcion;
+        document.getElementById('producto-categoria').textContent = producto.categoria;
+        document.getElementById('breadcrumb-producto').textContent = producto.nombre;
+        document.getElementById('form-productoId').value = producto.id;
+
+        // Stock
+        const stockElement = document.getElementById('stock-text');
+        if (producto.stock > 0) {
+            stockElement.textContent = `En stock (${producto.stock} disponibles)`;
+            stockElement.className = 'text-green-600 font-bold';
+        } else {
+            stockElement.textContent = 'Agotado';
+            stockElement.className = 'text-red-600 font-bold';
+        }
+
+        // Cargar productos relacionados
+        const productosRelacionados = Object.values(productosData).filter(p => p.id !== producto.id);
+        const container = document.getElementById('productos-relacionados');
+        container.innerHTML = productosRelacionados.map(p => `
+            <div class="border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition">
+                <div class="bg-gray-200 h-32 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-3xl text-gray-400">image</span>
+                </div>
+                <div class="p-4">
+                    <h4 class="font-bold text-sm mb-2">${p.nombre}</h4>
+                    <p class="text-primary font-bold">$${p.precio.toFixed(2)}</p>
+                    <a href="/producto/${p.id}" class="mt-3 block text-center bg-primary text-white py-2 rounded text-sm hover:bg-opacity-90">
+                        Ver
+                    </a>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function aumentarCantidad() {
+        const input = document.getElementById('cantidad');
+        input.value = parseInt(input.value) + 1;
+        actualizarFormulario();
+    }
+
+    function disminuirCantidad() {
+        const input = document.getElementById('cantidad');
+        if (parseInt(input.value) > 1) {
+            input.value = parseInt(input.value) - 1;
+            actualizarFormulario();
+        }
+    }
+
+    function actualizarFormulario() {
+        document.getElementById('form-cantidad').value = document.getElementById('cantidad').value;
+    }
+
+    function irAlFormulario() {
+        actualizarFormulario();
+        window.location.href = '/pedido/formulario';
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        cargarProducto();
+    });
+</script>
+
+</body>
+</html>
