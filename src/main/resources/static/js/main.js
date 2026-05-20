@@ -39,7 +39,11 @@ function filtrarPorCategoria(categoriaId) {
 
   const mensajeVacio = document.getElementById("mensaje-vacio");
   if (mensajeVacio) {
-    mensajeVacio.style.display = visibles === 0 ? "block" : "none";
+    if (visibles === 0) {
+      mensajeVacio.classList.remove("d-none");
+    } else {
+      mensajeVacio.classList.add("d-none");
+    }
   }
 }
 
@@ -63,32 +67,58 @@ function actualizarResumen() {
 
   if (!select || !inputCantidad) return;
 
-  const cantidad = parseInt(inputCantidad.value) || 1;
+  const botonConfirmar = document.getElementById("btn-confirmar-pedido");
+  const stockDisponible = document.getElementById("stock-disponible");
 
   if (select.value) {
     const option = select.options[select.selectedIndex];
-    const precio = parseFloat(option.dataset.precio);
-    const nombre = option.dataset.nombre;
+    const precio = parseFloat(option.dataset.precio || "0");
+    const nombre = option.dataset.nombre || "No seleccionado";
+    const stock = parseInt(option.dataset.stock || "0");
+
+    inputCantidad.max = stock > 0 ? String(stock) : "1";
+    let cantidad = parseInt(inputCantidad.value) || 1;
+    if (stock > 0 && cantidad > stock) {
+      cantidad = stock;
+      inputCantidad.value = stock;
+    }
+
+    if (stock <= 0) {
+      cantidad = 0;
+      inputCantidad.value = 1;
+      if (botonConfirmar) botonConfirmar.disabled = true;
+    } else if (botonConfirmar) {
+      botonConfirmar.disabled = false;
+    }
+
     const subtotal = precio * cantidad;
+    if (stockDisponible) {
+      stockDisponible.textContent = "Stock disponible: " + stock;
+    }
 
     document.getElementById("resumen-nombre").textContent = nombre;
     document.getElementById("resumen-cantidad").textContent =
       "Cantidad: " + cantidad;
     document.getElementById("resumen-precio").textContent =
-      "$" + subtotal.toFixed(2);
+      "C$ " + subtotal.toFixed(2);
     document.getElementById("total-precio").textContent =
-      "$" + subtotal.toFixed(2);
+      "C$ " + subtotal.toFixed(2);
   } else {
+    if (botonConfirmar) botonConfirmar.disabled = false;
+    if (stockDisponible) stockDisponible.textContent = "Stock disponible: 0";
+
     document.getElementById("resumen-nombre").textContent = "No seleccionado";
     document.getElementById("resumen-cantidad").textContent = "Cantidad: 0";
-    document.getElementById("resumen-precio").textContent = "$0.00";
-    document.getElementById("total-precio").textContent = "$0.00";
+    document.getElementById("resumen-precio").textContent = "C$ 0.00";
+    document.getElementById("total-precio").textContent = "C$ 0.00";
   }
 }
 
 function validarFormulario() {
   const inputNombre = document.getElementById("nombre");
   const inputCorreo = document.getElementById("correo");
+  const selectProducto = document.getElementById("producto");
+  const inputCantidad = document.getElementById("cantidad");
 
   if (!inputNombre || !inputCorreo) return true;
 
@@ -97,7 +127,7 @@ function validarFormulario() {
   let valido = true;
 
   if (nombre.length < 3) {
-    document.getElementById("error-nombre").textContent = "Mínimo 3 caracteres";
+    document.getElementById("error-nombre").textContent = "Minimo 3 caracteres";
     inputNombre.classList.add("error");
     valido = false;
   } else {
@@ -106,12 +136,29 @@ function validarFormulario() {
   }
 
   if (!correo.includes("@")) {
-    document.getElementById("error-correo").textContent = "Correo inválido";
+    document.getElementById("error-correo").textContent = "Correo invalido";
     inputCorreo.classList.add("error");
     valido = false;
   } else {
     document.getElementById("error-correo").textContent = "";
     inputCorreo.classList.remove("error");
+  }
+
+  if (selectProducto && inputCantidad) {
+    const option = selectProducto.options[selectProducto.selectedIndex];
+    const stock = option ? parseInt(option.dataset.stock || "0") : 0;
+    const cantidad = parseInt(inputCantidad.value || "0");
+
+    if (!selectProducto.value) {
+      document.getElementById("error-producto").textContent = "Selecciona un producto";
+      valido = false;
+    } else if (stock <= 0 || cantidad < 1 || cantidad > stock) {
+      document.getElementById("error-producto").textContent =
+        "La cantidad excede el stock disponible.";
+      valido = false;
+    } else {
+      document.getElementById("error-producto").textContent = "";
+    }
   }
 
   return valido;

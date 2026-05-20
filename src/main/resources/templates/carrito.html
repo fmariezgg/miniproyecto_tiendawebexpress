@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Carrito - Tienda Web Express</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="/">
+          <img th:src="@{/images/logo.svg}" alt="Logo" width="30" height="30" />
+          <span>Tienda Express</span>
+        </a>
+        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navCarrito" type="button">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navCarrito">
+          <ul class="navbar-nav ms-auto gap-lg-2">
+            <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link" href="/catalogo">Catalogo</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/carrito">Carrito</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container py-5">
+      <h1 class="h3 mb-4">Tu carrito de compras</h1>
+
+      <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
+      <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+      <div th:each="aviso : ${avisos}" class="alert alert-warning" th:text="${aviso}"></div>
+
+      <div class="card shadow-sm" th:if="${!#lists.isEmpty(items)}">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead>
+                <tr>
+                  <th>Producto</th>
+                  <th>Precio</th>
+                  <th>Cantidad</th>
+                  <th>Subtotal</th>
+                  <th class="text-end">Accion</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="item : ${items}">
+                  <td>
+                    <div class="d-flex align-items-center gap-3">
+                      <img
+                        alt="Producto"
+                        class="rounded"
+                        th:if="${item.imagen != null and !item.imagen.isEmpty()}"
+                        th:src="@{${item.imagen}}"
+                        style="width: 64px; height: 64px; object-fit: cover"
+                      />
+                      <span th:text="${item.nombre}">Producto</span>
+                    </div>
+                  </td>
+                  <td th:text="'C$ ' + ${item.precioUnitario}">C$ 0.00</td>
+                  <td th:text="${item.cantidad}">1</td>
+                  <td class="fw-semibold" th:text="'C$ ' + ${item.subtotal}">C$ 0.00</td>
+                  <td class="text-end">
+                    <form action="/carrito/eliminar" method="post">
+                      <input name="productoId" th:value="${item.productoId}" type="hidden" />
+                      <button class="btn btn-sm btn-outline-danger" type="submit">Eliminar</button>
+                    </form>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th colspan="3" class="text-end">Total</th>
+                  <th th:text="'C$ ' + ${total}">C$ 0.00</th>
+                  <th></th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+
+          <div class="d-flex justify-content-between flex-column flex-md-row gap-2 mt-3">
+            <a class="btn btn-outline-secondary" href="/catalogo">Seguir comprando</a>
+            <form action="/carrito/finalizar" method="post">
+              <button class="btn btn-success" type="submit">Finalizar pedido</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-info" th:if="${#lists.isEmpty(items)}">
+        Tu carrito esta vacio. Agrega productos desde el catalogo.
+      </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
+

@@ -1,5 +1,6 @@
 package ni.edu.uam.miniproyecto_tiendawebexpress.controller;
 
+import ni.edu.uam.miniproyecto_tiendawebexpress.service.CategoriaService;
 import ni.edu.uam.miniproyecto_tiendawebexpress.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,9 @@ public class ProductoController {
     @Autowired
     private ProductoService productoService;
 
+    @Autowired
+    private CategoriaService categoriaService;
+
     @GetMapping("/{id}")
     public String detalle(@PathVariable Long id, Model model) {
         model.addAttribute("producto", productoService.obtenerPorId(id).orElse(null));
@@ -23,6 +27,7 @@ public class ProductoController {
     @GetMapping("/categoria/{categoriaId}")
     public String porCategoria(@PathVariable Long categoriaId, Model model) {
         model.addAttribute("productos", productoService.obtenerPorCategoria(categoriaId));
+        model.addAttribute("categorias", categoriaService.obtenerTodas());
         return "catalogo";
     }
 }

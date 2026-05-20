@@ -1,178 +1,131 @@
 <!doctype html>
-<html class="light" lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Hacer Pedido - Tienda Web Express</title>
-
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              primary: "#006972",
-              surface: "#fff9ef",
-              "on-surface": "#1d1b16",
-              error: "#ba1a1a",
-            },
-          },
-        },
-      };
-    </script>
-
     <link rel="stylesheet" th:href="@{/css/style.css}" />
   </head>
-  <body class="bg-surface text-on-surface">
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-50 p-4">
-      <div class="max-w-7xl mx-auto flex items-center justify-between">
-        <h1 class="text-2xl font-bold text-primary">Tienda Express</h1>
-        <div class="hidden md:flex gap-8 items-center">
-          <a href="/" class="hover:text-primary">Inicio</a>
-          <a href="/catalogo" class="hover:text-primary">Catálogo</a>
-        </div>
-        <button id="menu-toggle" class="md:hidden">
-          <span class="material-symbols-outlined text-primary">menu</span>
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="/">
+          <img th:src="@{/images/logo.svg}" alt="Logo" width="30" height="30" />
+          <span>Tienda Express</span>
+        </a>
+        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navPedido" type="button">
+          <span class="navbar-toggler-icon"></span>
         </button>
+        <div class="collapse navbar-collapse" id="navPedido">
+          <ul class="navbar-nav ms-auto gap-lg-2">
+            <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link" href="/catalogo">Catalogo</a></li>
+            <li class="nav-item"><a class="nav-link" href="/carrito">Carrito</a></li>
+          </ul>
+        </div>
       </div>
-    </header>
+    </nav>
 
-    <div class="max-w-7xl mx-auto px-4 py-12">
-      <div class="grid lg:grid-cols-3 gap-12">
-        <div class="lg:col-span-2">
-          <div class="bg-white p-8 rounded-lg border border-gray-200">
-            <h1 class="text-3xl font-bold text-primary mb-8">
-              Completa tu Pedido
-            </h1>
+    <main class="container py-5">
+      <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-            <form
-              id="formulario-pedido"
-              action="/pedido/crear"
-              method="POST"
-              onsubmit="return validarFormulario();"
-            >
-              <fieldset class="mb-10 pb-10 border-b border-gray-200">
-                <legend class="text-xl font-bold mb-6">
-                  1. Información Personal
-                </legend>
-                <div class="mb-6">
-                  <label class="block text-sm font-bold mb-2"
-                    >Nombre Completo *</label
-                  >
-                  <input
-                    type="text"
-                    id="nombre"
-                    name="nombreCliente"
-                    class="input-field"
-                    required
-                  />
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="card shadow-sm">
+            <div class="card-body p-4 p-lg-5">
+              <h1 class="h3 mb-4">Completa tu pedido</h1>
+              <form id="formulario-pedido" action="/pedido/crear" method="POST" onsubmit="return validarFormulario();">
+                <h2 class="h5 mb-3">1. Informacion personal</h2>
+                <div class="mb-3">
+                  <label class="form-label" for="nombre">Nombre completo *</label>
+                  <input type="text" id="nombre" name="nombreCliente" class="form-control" th:value="${nombreCliente}" required />
                   <span class="error-message" id="error-nombre"></span>
                 </div>
-                <div class="mb-6">
-                  <label class="block text-sm font-bold mb-2"
-                    >Correo Electrónico *</label
-                  >
-                  <input
-                    type="email"
-                    id="correo"
-                    name="correo"
-                    class="input-field"
-                    required
-                  />
+                <div class="mb-4">
+                  <label class="form-label" for="correo">Correo electronico *</label>
+                  <input type="email" id="correo" name="correo" class="form-control" th:value="${correo}" required />
                   <span class="error-message" id="error-correo"></span>
                 </div>
-              </fieldset>
 
-              <fieldset class="mb-10 pb-10 border-b border-gray-200">
-                <legend class="text-xl font-bold mb-6">
-                  2. Selecciona tu Producto
-                </legend>
-                <div class="mb-6">
-                  <label class="block text-sm font-bold mb-2">Producto *</label>
-                  <select
-                    id="producto"
-                    name="productoId"
-                    class="input-field"
-                    onchange="actualizarResumen()"
-                    required
-                  >
+                <h2 class="h5 mb-3">2. Selecciona tu producto</h2>
+                <div class="mb-3">
+                  <label class="form-label" for="producto">Producto *</label>
+                  <select id="producto" name="productoId" class="form-select" onchange="actualizarResumen()" required>
                     <option value="">-- Selecciona un producto --</option>
                     <option
                       th:each="p : ${productos}"
+                      th:if="${p.stock > 0}"
+                      th:value="${p.id}"
+                      th:selected="${productoSeleccionadoId != null and productoSeleccionadoId == p.id}"
+                      th:data-precio="${p.precio}"
+                      th:data-nombre="${p.nombre}"
+                      th:data-stock="${p.stock}"
+                      th:text="${p.nombre} + ' - C$' + ${p.precio} + ' (Stock: ' + ${p.stock} + ')'"
+                    ></option>
+                    <option
+                      th:each="p : ${productos}"
+                      th:unless="${p.stock > 0}"
                       th:value="${p.id}"
                       th:data-precio="${p.precio}"
                       th:data-nombre="${p.nombre}"
-                      th:text="${p.nombre} + ' - $' + ${p.precio}"
+                      th:data-stock="${p.stock}"
+                      th:disabled="true"
+                      th:text="${p.nombre} + ' - C$' + ${p.precio} + ' (Agotado)'"
                     ></option>
                   </select>
                   <span class="error-message" id="error-producto"></span>
+                  <small class="text-muted" id="stock-disponible">Stock disponible: 0</small>
                 </div>
-                <div class="mb-6">
-                  <label class="block text-sm font-bold mb-2">Cantidad *</label>
+                <div class="mb-4">
+                  <label class="form-label" for="cantidad">Cantidad *</label>
                   <input
                     type="number"
                     id="cantidad"
                     name="cantidad"
-                    class="input-field"
-                    value="1"
+                    class="form-control"
+                    th:value="${cantidadSeleccionada != null ? cantidadSeleccionada : 1}"
                     min="1"
                     onchange="actualizarResumen()"
                     required
                   />
                 </div>
-              </fieldset>
 
-              <fieldset class="mb-10">
-                <legend class="text-xl font-bold mb-6">
-                  3. Notas Adicionales
-                </legend>
-                <textarea
-                  name="comentario"
-                  class="input-field"
-                  rows="4"
-                  placeholder="Dirección de entrega..."
-                ></textarea>
-              </fieldset>
+                <h2 class="h5 mb-3">3. Notas adicionales</h2>
+                <div class="mb-4">
+                  <textarea name="comentario" class="form-control" rows="4" placeholder="Direccion de entrega..." th:text="${comentario}"></textarea>
+                </div>
 
-              <button type="submit" class="w-full button-primary py-3 text-lg">
-                Confirmar Pedido
-              </button>
-            </form>
+                <button id="btn-confirmar-pedido" type="submit" class="btn btn-primary w-100">Confirmar pedido</button>
+              </form>
+            </div>
           </div>
         </div>
 
-        <div class="lg:col-span-1">
-          <div
-            class="bg-white p-6 rounded-lg border border-gray-200 sticky top-24"
-          >
-            <h2 class="text-lg font-bold text-primary mb-6">Resumen</h2>
-            <div class="mb-6 pb-6 border-b border-gray-200">
-              <p id="resumen-nombre" class="font-bold text-sm">
-                No seleccionado
-              </p>
-              <div class="flex justify-between mt-2 text-sm">
-                <span id="resumen-cantidad" class="text-gray-600"
-                  >Cantidad: 0</span
-                >
-                <span id="resumen-precio" class="font-bold">$0.00</span>
+        <div class="col-lg-4">
+          <div class="card shadow-sm sticky-lg-top" style="top: 1rem">
+            <div class="card-body">
+              <h2 class="h5 mb-3">Resumen</h2>
+              <p id="resumen-nombre" class="fw-semibold mb-2">No seleccionado</p>
+              <div class="d-flex justify-content-between small mb-3">
+                <span id="resumen-cantidad" class="text-muted">Cantidad: 0</span>
+                <span id="resumen-precio" class="fw-semibold">C$ 0.00</span>
               </div>
-            </div>
-            <div class="flex justify-between text-lg">
-              <span class="font-bold">Total</span>
-              <span id="total-precio" class="font-bold text-primary text-2xl"
-                >$0.00</span
-              >
+              <hr />
+              <div class="d-flex justify-content-between fs-5">
+                <span class="fw-bold">Total</span>
+                <span id="total-precio" class="fw-bold text-primary">C$ 0.00</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script th:src="@{/js/main.js}"></script>
   </body>
 </html>

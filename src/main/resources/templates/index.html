@@ -1,193 +1,90 @@
 <!doctype html>
-<html class="light" lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Tienda Web Express - Tu tienda online</title>
-
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <title>Tienda Web Express - Inicio</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@600;700;800&display=swap"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-      rel="stylesheet"
-    />
-
-    <script id="tailwind-config">
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              primary: "#006972",
-              secondary: "#306669",
-              surface: "#fff9ef",
-              "on-surface": "#1d1b16",
-              error: "#ba1a1a",
-            },
-          },
-        },
-      };
-    </script>
-
     <link rel="stylesheet" th:href="@{/css/style.css}" />
   </head>
-  <body class="bg-surface text-on-surface font-body-md">
-    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
-      <nav
-        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between"
-      >
-        <div class="flex items-center gap-3">
-          <div
-            class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center"
-          >
-            <span class="text-white font-bold text-lg">T</span>
-          </div>
-          <h1 class="text-2xl font-bold text-primary">Tienda Express</h1>
-        </div>
-        <div class="hidden md:flex items-center gap-8">
-          <a href="/" class="text-on-surface hover:text-primary">Inicio</a>
-          <a href="/catalogo" class="text-on-surface hover:text-primary"
-            >Catálogo</a
-          >
-          <a href="/pedido/formulario" class="button-primary">Hacer Pedido</a>
-        </div>
-        <button id="menu-toggle" class="md:hidden">
-          <span class="material-symbols-outlined text-primary">menu</span>
-        </button>
-      </nav>
-      <div
-        id="mobile-menu"
-        class="hidden md:hidden bg-white border-t border-gray-200 p-4"
-      >
-        <a href="/" class="block py-2">Inicio</a>
-        <a href="/catalogo" class="block py-2">Catálogo</a>
-        <a
-          href="/pedido/formulario"
-          class="button-primary w-full mt-2 text-center inline-block"
-          >Hacer Pedido</a
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="/">
+          <img th:src="@{/images/logo.svg}" alt="Logo" width="30" height="30" />
+          <span>Tienda Express</span>
+        </a>
+        <button
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+          class="navbar-toggler"
+          data-bs-target="#navbarNav"
+          data-bs-toggle="collapse"
+          type="button"
         >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+            <li class="nav-item"><a class="nav-link active" href="/">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link" href="/catalogo">Catalogo</a></li>
+            <li class="nav-item"><a class="nav-link" href="/carrito">Carrito</a></li>
+            <li class="nav-item"><a class="btn btn-warning" href="/pedido/formulario">Hacer pedido</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <header class="py-5 text-center bg-white border-bottom">
+      <div class="container">
+        <h1 class="display-6 fw-bold">Bienvenido a Tienda Web Express</h1>
+        <p class="lead text-muted">Productos de calidad con una experiencia de compra simple.</p>
+        <a class="btn btn-primary btn-lg" href="/catalogo">Ver catalogo</a>
       </div>
     </header>
 
-    <section
-      class="bg-gradient-to-r from-primary to-secondary text-white py-20 px-4"
-    >
-      <div class="max-w-7xl mx-auto text-center">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">
-          Bienvenido a Tienda Web Express
-        </h1>
-        <p class="text-xl md:text-2xl mb-8 opacity-90">
-          Productos de calidad entregados rápidamente a tu puerta
-        </p>
-        <div class="flex gap-4 justify-center flex-col sm:flex-row">
-          <a
-            href="/catalogo"
-            class="bg-white text-primary font-bold py-3 px-8 rounded-lg hover:bg-gray-100"
-            >Ver Catálogo</a
-          >
-          <a
-            href="/pedido/formulario"
-            class="border-2 border-white text-white font-bold py-3 px-8 rounded-lg hover:bg-white hover:text-primary"
-            >Hacer mi Pedido</a
-          >
-        </div>
-      </div>
-    </section>
+    <main class="container py-5">
+      <div th:if="${mensaje}" class="alert alert-success" th:text="${mensaje}"></div>
+      <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
-    <section class="py-16 px-4">
-      <div class="max-w-7xl mx-auto">
-        <h2 class="text-3xl font-bold text-primary mb-12 text-center">
-          Productos Destacados
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div
-            th:each="producto, iterStat : ${productos}"
-            th:if="${iterStat.index < 3}"
-            class="product-card"
-          >
-            <div
-              class="bg-gray-200 h-48 flex items-center justify-center overflow-hidden"
-            >
+      <section>
+        <h2 class="h3 mb-4">Productos destacados</h2>
+        <div class="row g-4">
+          <div class="col-md-6 col-lg-4" th:each="producto, iterStat : ${productos}" th:if="${iterStat.index < 3}">
+            <div class="card h-100 shadow-sm">
               <img
+                alt="Producto"
+                class="card-img-top"
                 th:if="${producto.imagen != null and !producto.imagen.isEmpty()}"
                 th:src="@{${producto.imagen}}"
-                class="w-full h-full object-cover"
+                style="height: 220px; object-fit: cover"
               />
-              <span
-                th:unless="${producto.imagen != null and !producto.imagen.isEmpty()}"
-                class="material-symbols-outlined text-4xl text-gray-400"
-                >image</span
-              >
-            </div>
-            <div class="p-4">
-              <p
-                class="text-sm text-secondary mb-2"
-                th:text="${producto.categoria.nombre}"
-              >
-                Categoría
-              </p>
-              <h3
-                class="font-bold text-lg mb-2 h-14 overflow-hidden"
-                th:text="${producto.nombre}"
-              >
-                Nombre
-              </h3>
-              <p
-                class="text-primary font-bold text-xl mb-4"
-                th:text="'$' + ${producto.precio}"
-              >
-                $0.00
-              </p>
-              <div class="flex gap-2">
-                <a
-                  th:href="@{/producto/{id}(id=${producto.id})}"
-                  class="flex-1 text-center bg-primary text-white py-2 rounded hover:bg-opacity-90"
-                  >Ver Detalle</a
-                >
+              <div class="card-body d-flex flex-column">
+                <span class="badge text-bg-secondary mb-2" th:text="${producto.categoria.nombre}">Categoria</span>
+                <h3 class="h5" th:text="${producto.nombre}">Nombre</h3>
+                <p class="text-primary fw-bold mb-3" th:text="'C$ ' + ${producto.precio}">C$ 0.00</p>
+                <div class="d-grid gap-2 mt-auto">
+                  <a class="btn btn-outline-primary" th:href="@{/producto/{id}(id=${producto.id})}">Ver detalle</a>
+                  <form action="/carrito/agregar" method="post">
+                    <input name="productoId" th:value="${producto.id}" type="hidden" />
+                    <input name="cantidad" type="hidden" value="1" />
+                    <input name="redirectTo" type="hidden" value="/" />
+                    <button class="btn btn-primary w-100" th:disabled="${producto.stock <= 0}" type="submit">
+                      <span th:text="${producto.stock > 0 ? 'Agregar al carrito' : 'Sin stock'}">Agregar al carrito</span>
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </main>
 
-    <section class="bg-gray-50 py-16 px-4">
-      <div class="max-w-7xl mx-auto">
-        <h2 class="text-3xl font-bold text-primary mb-12 text-center">
-          Categorías
-        </h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <a
-            th:each="categoria : ${categorias}"
-            th:href="@{/producto/categoria/{id}(id=${categoria.id})}"
-            class="bg-white p-4 rounded-lg text-center hover:shadow-lg transition"
-          >
-            <div
-              class="bg-primary bg-opacity-10 rounded-lg p-4 mb-2 h-24 flex items-center justify-center"
-            >
-              <span class="material-symbols-outlined text-primary text-4xl"
-                >shopping_bag</span
-              >
-            </div>
-            <h3 class="font-bold text-on-surface" th:text="${categoria.nombre}">
-              Categoría
-            </h3>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <footer class="bg-gray-900 text-white py-12 text-center">
-      <p>&copy; 2026 Tienda Web Express. Todos los derechos reservados.</p>
-    </footer>
-
-    <script th:src="@{/js/main.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
